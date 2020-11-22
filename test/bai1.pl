@@ -121,7 +121,11 @@ aunt(Person, NieceNephew) :- sister(Person, Z), parent(Z, NieceNephew).
 
 uncle(Person, NieceNephew) :- brother(Person, Z), parent(Z, NieceNephew).
 
-niece(Person, AuntUncle) :- daughter(Person, Z), sibling(Z, AuntUncle).
+%niece(Person, AuntUncle) :- daughter(Person, Z), (married(AuntUncle, Y), sibling(Y, Z)).
 
-nephew(Person, AuntUncle) :- son(Person, Z), sibling(Z, AuntUncle).
+niece(Person, AuntUncle) :- daughter(Person, Z), (sibling(Z, AuntUncle); (married(AuntUncle, Y), sibling(Y, Z)))..
+
+%niece(Person, AuntUncle) :- daughter(Person, Z), sibling(Z, AuntUncle).
+
+nephew(Person, AuntUncle) :- son(Person, Z), (sibling(Z, AuntUncle); (married(AuntUncle, Y), sibling(Y, Z))).
 
