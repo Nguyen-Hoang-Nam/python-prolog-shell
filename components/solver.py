@@ -8,14 +8,21 @@ class Solver(object):
     self.database = database
 
   def run(self):
+    # Query much be Term or Conjunction
     query = Parser(self.tokens).parse_query()
 
     query_variable_map = {}
+
+    # Check if variable in query
     variable_in_query = False
 
     for argument in query.arguments:
+      
+      # Check if argument is Variable
       if isinstance(argument, Variable):
         variable_in_query = True
+
+        # Store Variable in query_variable_map
         query_variable_map[argument.name] = argument
 
     matching_query_terms = [item for item in self.database.query(query)]
