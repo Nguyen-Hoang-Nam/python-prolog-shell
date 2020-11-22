@@ -111,21 +111,17 @@ grandson(GS, GP) :- son(GS, Z), child(Z, GP).
 
 granddaughter(GD, GP) :- daughter(GD, Z), child(Z, GP).
 
-sibling(Person1, Person2) :- child(Person1, Z), child(Person2, Z).
+sibling(Person1, Person2) :- child(Person1, Z), child(Person2, Z), \== Person1, Person2.
 
 brother(Person, Sibling) :- male(Person), sibling(Person, Sibling).
 
 sister(Person, Sibling) :- female(Person), sibling(Person, Sibling).
 
-aunt(Person, NieceNephew) :- sister(Person, Z), parent(Z, NieceNephew).
+aunt(Person, NieceNephew) :- ((sister(Person, Z), parent(Z, NieceNephew), \+ parent(Person, NieceNephew)); (brother(Y, Z), parent(Z, NieceNephew), \+ parent(Y, NieceNephew), wife(Person, Y))).
 
-uncle(Person, NieceNephew) :- brother(Person, Z), parent(Z, NieceNephew).
-
-%niece(Person, AuntUncle) :- daughter(Person, Z), (married(AuntUncle, Y), sibling(Y, Z)).
+uncle(Person, NieceNephew) :- ((brother(Person, Z), parent(Z, NieceNephew), \+ parent(Person, NieceNephew)); (sister(Y, Z), parent(Z, NieceNephew), \+ parent(Y, NieceNephew), husband(Person, Y))).
 
 niece(Person, AuntUncle) :- daughter(Person, Z), (sibling(Z, AuntUncle); (married(AuntUncle, Y), sibling(Y, Z)))..
-
-%niece(Person, AuntUncle) :- daughter(Person, Z), sibling(Z, AuntUncle).
 
 nephew(Person, AuntUncle) :- son(Person, Z), (sibling(Z, AuntUncle); (married(AuntUncle, Y), sibling(Y, Z))).
 
