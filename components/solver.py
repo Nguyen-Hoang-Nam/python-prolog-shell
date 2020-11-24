@@ -1,6 +1,10 @@
 from components.parser import Parser
 from collections import defaultdict
 from components.interpreter import Variable
+from components.helper import getch
+
+from colorama import Fore, Style 
+from sys import stdout
 
 class Solver(object):
   def __init__(self, tokens, database):
@@ -41,10 +45,30 @@ class Solver(object):
               matching_variable_bindings.get(variable)
             )
         
-        return solutions_map
+        for varialbe, value in solutions_map.items():
+          value_len = len(value)
+          break
+        
+        end_variable = False 
+        value_number = 0
+        while not end_variable and value_number < value_len:
+          for varialbe, value in solutions_map.items():
+            print(str(variable) + ": " + str(value[value_number]))
+
+          query = getch()
+          print(";")
+
+          if(query != ";"):
+            end_variable = True
+          value_number += 1
+          
+        if(value_number == value_len):
+          print(Fore.RED + "false. \n" + Style.RESET_ALL)
+        else:
+          print(". \n")
       
       else:
-        return True if not variable_in_query else None 
+        print("true. \n") if not variable_in_query else print(Fore.RED + "false. \n" + Style.RESET_ALL)
       
     else:
-      return False if not variable_in_query else None
+      print(Fore.RED + "false. \n" + Style.RESET_ALL)

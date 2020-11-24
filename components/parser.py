@@ -1,9 +1,9 @@
 import re
 
-from components.interpreter import Conjunction, Variable, Term, TRUE, Rule, Disjunction, Negation, Unequal
+from components.interpreter import Conjunction, Variable, Term, TRUE, Rule, Disjunction, Negation, Unequal, Equal
 
 # Check normal name or name with space
-ATOM_NAME_REGEX = r"^[A-Za-z0-9_]+$|^\'[A-Za-z0-9_][A-Za-z0-9_\-\,]+\s*[A-Za-z0-9_\-, ]*\'$"
+ATOM_NAME_REGEX = r"^[A-Za-z0-9_]+$|^\'[A-Za-z0-9_][A-Za-z0-9_\-\,.]+\s*[A-Za-z0-9_\-,. ]*\'$"
 VARIABLE_REGEX = r"^[A-Z_][A-Za-z0-9_]*$"
 
 class Parser(object):
@@ -59,6 +59,15 @@ class Parser(object):
       self.pop_current()
       arguments.append(self.parse_term())
       return Unequal(arguments)
+
+    if self.current == "==":
+      self.pop_current()
+
+      arguments = []
+      arguments.append(self.parse_term())
+      self.pop_current()
+      arguments.append(self.parse_term())
+      return Equal(arguments)
 
     if self.current == "\\+":
       self.pop_current() # Remove "\+"

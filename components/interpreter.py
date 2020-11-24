@@ -157,6 +157,26 @@ class Unequal(Term):
   def __repr__(self):
     return str(self)
 
+class Equal(Term):
+  def __init__(self, arguments):
+    # Super allows Conjunction to access methods of the Term class
+    super().__init__("==", arguments)
+
+  def subtitute_variable_bindings(self, variable_bindings):
+    return Equal(
+      [
+        self.arguments[0].subtitute_variable_bindings(variable_bindings),
+        self.arguments[1].subtitute_variable_bindings(variable_bindings)
+      ]
+    )
+
+  # Not can only have one argument
+  def __str__(self):
+    return "== " + str(self.arguments[0]) + " " + str(self.arguments[1])
+
+  def __repr__(self):
+    return str(self)
+
 class Negation(Term):
   def __init__(self, arguments):
     # Super allows Conjunction to access methods of the Term class
@@ -305,6 +325,10 @@ class Database(object):
     
     elif goal.functor == "\\==":
       if goal.arguments[0].functor != goal.arguments[1].functor:
+        yield goal.subtitute_variable_bindings({})
+
+    elif goal.functor == "==":
+      if goal.arguments[0].functor == goal.arguments[1].functor:
         yield goal.subtitute_variable_bindings({})
 
     else:

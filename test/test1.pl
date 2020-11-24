@@ -85,43 +85,65 @@ female('Isla Phillips').
 female('Mia Grace Tindall').
 
 % RULES
-husband(Person, Wife) :- male(Person), married(Person, Wife).
+husband(Person, Wife) :-
+  male(Person), married(Person, Wife).
 
-wife(Person, Husband) :- female(Person), married(Person, Husband).
+wife(Person, Husband) :-
+  female(Person), married(Person, Husband).
 
-father(Parent, Child) :- male(Parent), parent(Parent, Child).
+father(Parent, Child) :-
+  male(Parent), parent(Parent, Child).
 
-mother(Parent, Child) :- female(Parent), parent(Parent, Child).
+mother(Parent, Child) :-
+  female(Parent), parent(Parent, Child).
 
-child(Child, Parent) :- parent(Parent, Child).
+child(Child, Parent) :-
+  parent(Parent, Child).
 
-son(Child, Parent) :- male(Child), parent(Parent, Child).
+son(Child, Parent) :-
+  male(Child), parent(Parent, Child).
 
-daughter(Child, Parent) :- female(Child), parent(Parent, Child).
+daughter(Child, Parent) :-
+  female(Child), parent(Parent, Child).
 
-grandparent(GP, GC) :- parent(GP, Z), parent(Z, GC).
+grandparent(GP, GC) :-
+  parent(GP, Z), parent(Z, GC).
 
-grandmother(GM, GC) :- mother(GM, Z), parent(Z, GC).
+grandmother(GM, GC) :-
+  mother(GM, Z), parent(Z, GC).
 
-grandfather(GF, GC) :- father(GF, Z), parent(Z, GC).
+grandfather(GF, GC) :-
+  father(GF, Z), parent(Z, GC).
 
-grandchild(GC, GP) :- child(GC, Z), child(Z, GP).
+grandchild(GC, GP) :-
+  child(GC, Z), child(Z, GP).
 
-grandson(GS, GP) :- son(GS, Z), child(Z, GP).
+grandson(GS, GP) :-
+  son(GS, Z), child(Z, GP).
 
-granddaughter(GD, GP) :- daughter(GD, Z), child(Z, GP).
+granddaughter(GD, GP) :-
+  daughter(GD, Z), child(Z, GP).
 
-sibling(Person1, Person2) :- child(Person1, Z), child(Person2, Z), \== Person1, Person2.
+sibling(Person1, Person2) :-
+  child(Person1, Z), child(Person2, Z), Person1 \== Person2.
 
-brother(Person, Sibling) :- male(Person), sibling(Person, Sibling).
+brother(Person, Sibling) :-
+  male(Person), sibling(Person, Sibling).
 
-sister(Person, Sibling) :- female(Person), sibling(Person, Sibling).
+sister(Person, Sibling) :-
+  female(Person), sibling(Person, Sibling).
 
-aunt(Person, NieceNephew) :- ((sister(Person, Z), parent(Z, NieceNephew), \+ parent(Person, NieceNephew)); (brother(Y, Z), parent(Z, NieceNephew), \+ parent(Y, NieceNephew), wife(Person, Y))).
+aunt(Person, NieceNephew) :-
+  (sister(Person, Z), parent(Z, NieceNephew), \+ parent(Person, NieceNephew));
+  (uncle(Y, NieceNephew), wife(Person, Y)).
 
-uncle(Person, NieceNephew) :- ((brother(Person, Z), parent(Z, NieceNephew), \+ parent(Person, NieceNephew)); (sister(Y, Z), parent(Z, NieceNephew), \+ parent(Y, NieceNephew), husband(Person, Y))).
+uncle(Person, NieceNephew) :-
+  (brother(Person, Z), parent(Z, NieceNephew), \+ parent(Person, NieceNephew));
+  (aunt(Y, NieceNephew), husband(Person, Y)).
 
-niece(Person, AuntUncle) :- daughter(Person, Z), (sibling(Z, AuntUncle); (married(AuntUncle, Y), sibling(Y, Z))).
+niece(Person, AuntUncle) :-
+  daughter(Person, Z), (sibling(Z, AuntUncle); (married(AuntUncle, Y), sibling(Y, Z))).
 
-nephew(Person, AuntUncle) :- son(Person, Z), (sibling(Z, AuntUncle); (married(AuntUncle, Y), sibling(Y, Z))).
+nephew(Person, AuntUncle) :-
+  son(Person, Z), (sibling(Z, AuntUncle); (married(AuntUncle, Y), sibling(Y, Z))).
 

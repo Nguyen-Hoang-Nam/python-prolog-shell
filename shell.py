@@ -6,25 +6,50 @@ from components.interpreter import Database
 from components.scan import Scan
 from components.parser import Parser
 from components.solver import Solver 
+from components.helper import getch
+from sys import platform
 
-from colorama import Fore, Back, Style 
+from colorama import Fore, Style 
 
 DATABASE = r"^\[[A-Za-z0-9_]+\]\."
 
 class Shell():
   def main(self):
-    print("Welcome to Python Prolog shell (version 1.0.0). This is free and open source software \n")
+    print("Welcome to Python Prolog shell (version 1.3.0). This is free and open source software \n")
     print("For more information, visit https://github.com/Nguyen-Hoang-Nam/python-prolog-shell")
 
     database = None
     command_number = 1 # Count command
+    history = []
 
     while True:
       query = input(str(command_number) + " ?- ")
 
+      line_history = len(history)
+
+      if query == "up.":
+        print("\n")
+
+        if line_history > 0:
+          line_history -= 1
+          query = history[line_history]
+          command_number += 1
+          print(str(command_number) + " ?- " + query)
+
+      elif query == "down.":
+        print("\n")
+
+        if line_history < len(history):
+          line_history += 1
+          query = history[line_history]
+          command_number += 1
+          print(str(command_number) + " ?- " + query)
+        
+
       if query[-1] != '.': # Query must end with period
         print("Unexpected end of file.")
-        print("false\n")
+        print("false.\n")
+
       else:
         if query == "halt.": # Exit shell
           break
@@ -62,9 +87,10 @@ class Shell():
           database = Database(rules)
           
           # Exist file then print True
-          print("true\n") 
+          print("true.\n") 
           
         else: # Normal query
+          
           if database is None: # If user does not add database yet
             print("Unknow procedure \n")
             print("Rules must be loaded from a file")
@@ -73,9 +99,9 @@ class Shell():
             tokens = scan.tokens()
 
             solver = Solver(tokens, database)
-            solution = solver.run()
-            print(str(solution) + "\n")
+            solver.run()
 
+      history.append(query)
       command_number += 1
         
 # Run shell after start program

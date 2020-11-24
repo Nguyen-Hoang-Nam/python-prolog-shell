@@ -7,7 +7,7 @@ import re
 # 4: Inequality \\==
 # 5: Negation \\+
 # 6: Other operator [()\.,;]
-TOKEN_REGEX = r"[A-Za-z0-9_]+|\'[A-Za-z0-9_][A-Za-z0-9_\-\,]+\s*[A-Za-z0-9_\-, ]*\'|:\-|\\==|\\\+|[()\.,;]"
+TOKEN_REGEX = r"[A-Za-z0-9_]+|\'[A-Za-z0-9_][A-Za-z0-9_\-\,.]+\s*[A-Za-z0-9_\-,. ]*\'|:\-|\\==|==|\\\+|[()\.,;]"
 
 class Scan:
 
