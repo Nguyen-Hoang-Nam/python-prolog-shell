@@ -3,18 +3,40 @@ import re
 from components.interpreter import Conjunction, Variable, Term, TRUE, Rule, Disjunction, Negation, Unequal, Equal
 
 # Check normal name or name with space
-ATOM_NAME_REGEX = r"^[A-Za-z0-9_]+$|^\'[A-Za-z0-9_][A-Za-z0-9_\-\,.]+\s*[A-Za-z0-9_\-,. ]*\'$"
+ATOM_NAME_REGEX = r"^[A-Za-z0-9_]+$|^\'[A-Za-z0-9_][A-Za-z0-9_\-\,\.\? ]*\'$"
 VARIABLE_REGEX = r"^[A-Z_][A-Za-z0-9_]*$"
 
 class Parser(object):
   def __init__(self, tokens):
     # Store tokens as list 
     # Example: ["functor", "(", "argument1", ",", "argument2", ")"]
-    self.tokens = tokens 
+    self.all_tokens = tokens
+    self.tokens = tokens
+    self.rule_tokens = []
 
     # Store Variable in each query
     self._scope = None
     self.is_disjunction = False
+
+  def split_rule(self):
+    length = range(len(self.all_tokens))
+    start_rule = 0
+
+    for i in length:
+      # Swap first parameter and operator
+      if self.all_tokens[i] == ".":
+        self.rule_tokens.append(self.all_tokens[start_rule: i + 1])
+        start_rule = i + 1
+
+  def parse_rules(self):
+    self.split_rule()
+    rules = []
+    
+    for rule in self.rule_tokens:
+      self.tokens = rule
+      self._scope = {}
+      rules.append(self.parse_rule())
+    return rules
 
   # Call when use input new query
   def parse_query(self):
@@ -56,7 +78,6 @@ class Parser(object):
 
       arguments = []
       arguments.append(self.parse_term())
-      self.pop_current()
       arguments.append(self.parse_term())
       return Unequal(arguments)
 

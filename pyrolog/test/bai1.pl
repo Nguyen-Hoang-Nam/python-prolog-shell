@@ -111,7 +111,7 @@ grandson(GS, GP) :- son(GS, Z), child(Z, GP).
 
 granddaughter(GD, GP) :- daughter(GD, Z), child(Z, GP).
 
-sibling(Person1, Person2) :- child(Person1, Z), child(Person2, Z), \== Person1, Person2.
+sibling(Person1, Person2) :- child(Person1, Z), child(Person2, Z),  Person1 \== Person2.
 
 brother(Person, Sibling) :- male(Person), sibling(Person, Sibling).
 

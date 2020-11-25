@@ -53,6 +53,16 @@ class Term(object):
       ]
     )
 
+  def contain_variable(self):
+    query_variable = {}
+    for argument in self.arguments:
+      
+      # Check if argument is Variable
+      if isinstance(argument, Variable):
+        query_variable[argument.name] = argument # Store Variable
+
+    return query_variable
+
   def query(self, database):
     yield from database.query(self)
 
